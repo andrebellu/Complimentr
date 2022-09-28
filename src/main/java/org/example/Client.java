@@ -16,7 +16,6 @@ public class Client {
 
         var client = new Client();
 
-        // resize text to px in spark and align it vertically and horizontally and background black
         get("/", (req, res) -> "<html><body style=\"background-color: black; color: white; font-size: 50px; text-align: center; vertical-align: middle; height: 100%;\">" + client.call("https://complimentr.com/api").getString("compliment") + "</body></html>");
     }
 
@@ -30,16 +29,11 @@ public class Client {
                 .uri(URI.create(s))
                 .build();
 
-        // send the synchronous request
-        HttpResponse<String> response = null;
         try {
-            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+            var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return new JSONObject(response.body());
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return new JSONObject(response.body());
-
     }
 }
